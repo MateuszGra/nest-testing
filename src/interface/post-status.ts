@@ -1,4 +1,4 @@
-export type postStatus = {
+export type PostStatus = {
     isSuccess: true,
     index: number,
 } | {

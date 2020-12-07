@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {ApartmentData, ApartmentStatus, PurposeType} from "../interface/apartment-data";
-import {postStatus} from "../interface/post-status";
+import {PostStatus} from "../interface/post-status";
+import {PutStatus, StatusType} from "../interface/put-status";
 
 
 @Injectable()
@@ -81,33 +82,40 @@ export class ApartmentsService {
         return this.apartments;
     }
 
-    apartmentsSingle(id: string): ApartmentData {
+    apartmentsSingle(id: string): ApartmentData[] | PostStatus{
         id = id.toUpperCase();
-        let res = this.apartments.filter(apartment => apartment.id.includes(id));
-        if(res.length !== 0) return res[0];
+        let res: ApartmentData[] = this.apartments.filter(apartment => apartment.id.includes(id));
+        if(res[0]) return res;
+        else{
+            const statusFalse: PostStatus = {
+                isSuccess: false,
+                errors: [`${id} not found`],
+            }
+            return statusFalse;
+        }
     }
 
-    apartmentPush(newApartment): postStatus {
-        const status: postStatus = this.postValidation(newApartment);
+    apartmentPush(newApartment: ApartmentData): PostStatus {
+        const status: PostStatus = this.postValidation(newApartment);
         if (status.isSuccess === true) this.apartments.push(newApartment);
         return status;
     }
-    postValidation(newApartment): postStatus {
+
+    postValidation(newApartment: ApartmentData): PostStatus {
         const errors: string[] = [];
 
         if(!newApartment.name) errors.push('name is empty');
         else if(typeof newApartment.name !== 'string') errors.push('name is not string');
         else {
-            let filteredByName  = this.apartments.filter(apartment => apartment.name.includes(newApartment.name));
-            if(filteredByName[0]) errors.push('name already exists');
-            console.log(filteredByName[0]);
+            let findByName  = this.apartments.find(apartment => apartment.name === newApartment.name);
+            if(findByName) errors.push('name already exists');
         }
 
         if(!newApartment.id) errors.push('id is empty');
         else if(typeof newApartment.id !== 'string') errors.push('is is not string');
         else {
-            let filteredById  = this.apartments.filter(apartment => apartment.id.includes(newApartment.id));
-            if(filteredById[0]) errors.push('id already exists');
+            let findById  = this.apartments.find(apartment => apartment.name === newApartment.name);
+            if(findById) errors.push('id already exists');
         }
 
         if(!newApartment.size) errors.push('size is empty');
@@ -135,14 +143,14 @@ export class ApartmentsService {
         }
 
         if(errors.length === 0) {
-            const statusTrue: postStatus = {
+            const statusTrue: PostStatus = {
                 isSuccess: true,
                 index: this.apartments.length,
             }
             return statusTrue;
 
         } else {
-            const statusFalse: postStatus = {
+            const statusFalse: PostStatus = {
                 isSuccess: false,
                 errors: errors,
             }
@@ -151,20 +159,21 @@ export class ApartmentsService {
 
     }
 
-    apartmentRemove(id): postStatus {
-        let filtered  = this.apartments.filter(apartment => !apartment.id.includes(id));
-        console.log(filtered.length)
-        console.log(this.apartments.length)
-        if(filtered.length < this.apartments.length) {
-            this.apartments = filtered;
-            const statusTrue: postStatus = {
+    apartmentRemove(id: string): PostStatus {
+        id = id.toUpperCase();
+        const found  = this.apartments.find(apartment => apartment.id === id);
+        const index = this.apartments.indexOf(found)
+
+        if(found) {
+            this.apartments.splice(index, 1);
+            const statusTrue: PostStatus = {
                 isSuccess: true,
                 index: this.apartments.length,
             }
             return statusTrue;
         }
         else {
-            const statusFalse: postStatus = {
+            const statusFalse: PostStatus = {
                 isSuccess: false,
                 errors: [`${id} not found`],
             }
@@ -174,4 +183,28 @@ export class ApartmentsService {
 
     }
 
+    apartmentPut(id: string, apartmentDataPart): PostStatus | PutStatus  {
+        id = id.toUpperCase();
+        let found: ApartmentData = this.apartments.find(apartment => apartment.id === id);
+        const status: PutStatus = {};
+        if(found) {
+            const index: number = this.apartments.indexOf(found);
+            for (const key in apartmentDataPart) {
+                if(this.apartments[index][key]) {
+                    if(key === 'id') apartmentDataPart.id = apartmentDataPart.id.toUpperCase()
+                    this.apartments[index][key] = apartmentDataPart[key];
+                    status[key] = StatusType.changed;
+                } else {
+                    status[key] = StatusType.notExist;
+                }
+            }
+
+            return status;
+        } else {
+            const statusFalse: PostStatus = {
+                isSuccess: false,
+                errors: [`${id} not found`],
+            }
+        }
+    }
 }

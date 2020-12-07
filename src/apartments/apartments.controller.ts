@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, Inject, Param, Post} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/common';
 import {ApartmentsService} from "./apartments.service";
 import {ApartmentDto} from "./dto/apartment-dto";
-import {postStatus} from "../interface/post-status";
+import {PostStatus} from "../interface/post-status";
 import {ApartmentData} from "../interface/apartment-data";
 
 
@@ -18,24 +18,32 @@ export class ApartmentsController {
         return this.apartmentsService.apartmentsAll();
     }
 
-    @Get('/:id')
-    async showSingleApartment(
-        @Param('id') id: string,
-    ): Promise<ApartmentData> {
-        return this.apartmentsService.apartmentsSingle(id);
-    }
-
     @Post('/')
     async addApartment(
         @Body() newApartment: ApartmentDto,
-    ): Promise<postStatus> {
+    ): Promise<PostStatus> {
         return this.apartmentsService.apartmentPush(newApartment);
+    }
+
+    @Get('/:id')
+    async showSingleApartment(
+        @Param('id') id: string,
+    ): Promise<ApartmentData[] | PostStatus> {
+        return this.apartmentsService.apartmentsSingle(id);
     }
 
     @Delete('/:id')
     async removeApartment(
         @Param('id') id: string,
-    ): Promise<postStatus> {
+    ): Promise<PostStatus> {
         return this.apartmentsService.apartmentRemove(id);
+    }
+
+    @Put('/:id')
+    async editApartment(
+        @Param('id') id: string,
+        @Body() apartmentDataPart,
+    ) {
+        return this.apartmentsService.apartmentPut(id, apartmentDataPart);
     }
 }
