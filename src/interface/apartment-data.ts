@@ -12,6 +12,7 @@ export enum ApartmentStatus {
 
 export interface ApartmentData {
     name: string,
+    id: string,
     size: number,
     price: number,
     floor: number,
