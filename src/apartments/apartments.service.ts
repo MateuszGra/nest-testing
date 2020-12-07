@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import {ApartmentData, ApartmentStatus, PurposeType} from "../interface/apartment-data";
+import {postStatus} from "../interface/post-status";
+
 
 @Injectable()
 export class ApartmentsService {
@@ -84,4 +86,78 @@ export class ApartmentsService {
         let res = this.apartments.filter(apartment => apartment.id.includes(id));
         if(res.length !== 0) return res[0];
     }
+
+    apartmentPush(newApartment): postStatus {
+        this.apartments.push(newApartment);
+
+
+        return this.postValidation(newApartment);
+    }
+
+    postValidation(newApartment): postStatus {
+        const errors: string[] = [];
+
+        if(!newApartment.name) errors.push('name is empty');
+        else if(typeof newApartment.name !== 'string') errors.push('name is not string');
+        if(!newApartment.id) errors.push('id is empty');
+        else if(typeof newApartment.id !== 'string') errors.push('is is not string');
+        if(!newApartment.size) errors.push('size is empty');
+        else if(typeof newApartment.size !== 'number') errors.push('size is not number');
+        if(!newApartment.price) errors.push('price is empty');
+        else if(typeof newApartment.price !== 'number') errors.push('price is not number');
+        if(!newApartment.floor) errors.push('floor is empty');
+        else if(typeof newApartment.floor !== 'number') errors.push('floor is not number');
+        if(!newApartment.purpose) errors.push('purpose is empty');
+        else if(typeof newApartment.purpose !== 'string') errors.push('purpose is not string');
+        if(!newApartment.status) errors.push('status is empty');
+        else if(typeof newApartment.status !== 'string') errors.push('status is not string');
+        if(!newApartment.images) errors.push('images is empty');
+        else if(typeof newApartment.images !== 'object') errors.push('images is not object');
+        else {
+            if(!newApartment.images.projection) errors.push('projection is empty');
+            else if(typeof newApartment.images.projection !== 'string') errors.push('images.projection is not string');
+            if(!newApartment.images.floor) errors.push('floor is empty');
+            else if(typeof newApartment.images.floor !== 'string') errors.push('images.floor is not string');
+        }
+
+        if(errors.length === 0) {
+            const statusTrue: postStatus = {
+                isSuccess: true,
+                index: this.apartments.length,
+            }
+            return statusTrue;
+
+        } else {
+            const statusFalse: postStatus = {
+                isSuccess: false,
+                errors: errors,
+            }
+            return statusFalse;
+        }
+
+    }
+
+    apartmentRemove(id): postStatus {
+        let filtered  = this.apartments.filter(apartment => !apartment.id.includes(id));
+        console.log(filtered.length)
+        console.log(this.apartments.length)
+        if(filtered.length < this.apartments.length) {
+            this.apartments = filtered;
+            const statusTrue: postStatus = {
+                isSuccess: true,
+                index: this.apartments.length,
+            }
+            return statusTrue;
+        }
+        else {
+            const statusFalse: postStatus = {
+                isSuccess: false,
+                errors: [`${id} not found`],
+            }
+
+            return statusFalse;
+        }
+
+    }
+
 }

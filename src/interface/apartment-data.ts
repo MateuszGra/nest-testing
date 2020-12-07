@@ -1,13 +1,13 @@
 export enum PurposeType {
     any = 'Dowolne',
     gastronomy = 'Gasrtonomia',
-    textiles = 'Tekstylia'
+    textiles = 'Tekstylia',
 }
 
 export enum ApartmentStatus {
     free  = 'Wolny',
     booked  = 'Zarezerwowany',
-    sold = 'Sprzedany'
+    sold = 'Sprzedany',
 }
 
 export interface ApartmentData {
