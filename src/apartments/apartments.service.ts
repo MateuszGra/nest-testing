@@ -88,29 +88,43 @@ export class ApartmentsService {
     }
 
     apartmentPush(newApartment): postStatus {
-        this.apartments.push(newApartment);
-
-
-        return this.postValidation(newApartment);
+        const status: postStatus = this.postValidation(newApartment);
+        if (status.isSuccess === true) this.apartments.push(newApartment);
+        return status;
     }
-
     postValidation(newApartment): postStatus {
         const errors: string[] = [];
 
         if(!newApartment.name) errors.push('name is empty');
         else if(typeof newApartment.name !== 'string') errors.push('name is not string');
+        else {
+            let filteredByName  = this.apartments.filter(apartment => apartment.name.includes(newApartment.name));
+            if(filteredByName[0]) errors.push('name already exists');
+            console.log(filteredByName[0]);
+        }
+
         if(!newApartment.id) errors.push('id is empty');
         else if(typeof newApartment.id !== 'string') errors.push('is is not string');
+        else {
+            let filteredById  = this.apartments.filter(apartment => apartment.id.includes(newApartment.id));
+            if(filteredById[0]) errors.push('id already exists');
+        }
+
         if(!newApartment.size) errors.push('size is empty');
         else if(typeof newApartment.size !== 'number') errors.push('size is not number');
+
         if(!newApartment.price) errors.push('price is empty');
         else if(typeof newApartment.price !== 'number') errors.push('price is not number');
+
         if(!newApartment.floor) errors.push('floor is empty');
         else if(typeof newApartment.floor !== 'number') errors.push('floor is not number');
+
         if(!newApartment.purpose) errors.push('purpose is empty');
         else if(typeof newApartment.purpose !== 'string') errors.push('purpose is not string');
+
         if(!newApartment.status) errors.push('status is empty');
         else if(typeof newApartment.status !== 'string') errors.push('status is not string');
+
         if(!newApartment.images) errors.push('images is empty');
         else if(typeof newApartment.images !== 'object') errors.push('images is not object');
         else {
