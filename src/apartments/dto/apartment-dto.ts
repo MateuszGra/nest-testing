@@ -8,8 +8,6 @@ export class ApartmentDto {
     floor: number;
     purpose: PurposeType;
     status: ApartmentStatus;
-    images: {
-        projection: string;
-        floor: string;
-    }
+    projectionIMG: string;
+    floorIMG: string;
 }

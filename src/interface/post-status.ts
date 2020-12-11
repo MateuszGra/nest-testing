@@ -1,6 +1,6 @@
 export type PostStatus = {
     isSuccess: true,
-    index: number,
+    id: number,
 } | {
     isSuccess: false,
     errors: string[],
