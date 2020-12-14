@@ -1,9 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {ApartmentData} from "../interface/apartment-data";
 import {PostStatus} from "../interface/post-status";
-import {PutStatus, StatusType} from "../interface/put-status";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
 import {ApartmentsEntity} from "./apartments.entity";
 
 
@@ -11,17 +8,12 @@ import {ApartmentsEntity} from "./apartments.entity";
 export class ApartmentsService {
     apartments: ApartmentData[];
 
-    constructor(
-        @InjectRepository(ApartmentsEntity) private apartmentsEntityRepository: Repository<ApartmentsEntity>
-    ) {
-    }
-
     async apartmentsAll(): Promise<ApartmentData[]> {
-        return await this.apartmentsEntityRepository.find();
+        return await ApartmentsEntity.find();
     }
 
     async apartmentsSingle(id: number): Promise<ApartmentData | PostStatus>{
-        let res: ApartmentData = await this.apartmentsEntityRepository.findOne(id);
+        let res: ApartmentData = await ApartmentsEntity.findOne(id);
         if(res) return res;
         else{
             const statusFalse: PostStatus = {
@@ -32,10 +24,10 @@ export class ApartmentsService {
         }
     }
 
-    async apartmentPush(newApartment: ApartmentData): Promise<PostStatus> {
+    async apartmentPush(newApartment: ApartmentsEntity): Promise<PostStatus> {
         const status: PostStatus = await this.postValidation(newApartment);
         if (status.isSuccess === true) {
-            const add: ApartmentData = await this.apartmentsEntityRepository.save(newApartment);
+            const add: ApartmentData = await ApartmentsEntity.save(newApartment);
             status.id = parseInt(add.id);
         }
         return status;
@@ -47,13 +39,13 @@ export class ApartmentsService {
         if(!newApartment.name) errors.push('name is empty');
         else if(typeof newApartment.name !== 'string') errors.push('name is not string');
         else {
-            let findByName: ApartmentData  = await this.apartmentsEntityRepository.findOne({name: newApartment.name});
+            let findByName: ApartmentData  = await ApartmentsEntity.findOne({name: newApartment.name});
             if(findByName) errors.push('name already exists');
         }
 
         if(newApartment.id && typeof newApartment.id !== 'number') errors.push('id is not number');
         else if(newApartment.id !== undefined){
-            let findById: ApartmentData = await this.apartmentsEntityRepository.findOne(newApartment.id);
+            let findById: ApartmentData = await ApartmentsEntity.findOne(newApartment.id);
             if(findById) errors.push('id already exists');
         }
 
@@ -96,10 +88,10 @@ export class ApartmentsService {
     }
 
     async apartmentRemove(id: number): Promise<PostStatus> {
-        const find: ApartmentData = await this.apartmentsEntityRepository.findOne(id);
+        const find: ApartmentsEntity = await ApartmentsEntity.findOne(id);
 
         if(find) {
-            await this.apartmentsEntityRepository.remove(find);
+            await ApartmentsEntity.remove(find);
             const statusTrue: PostStatus = {
                 isSuccess: true,
                 id: id,
@@ -118,9 +110,9 @@ export class ApartmentsService {
     }
 
     async apartmentPut(id: number, apartmentDataPart): Promise<PostStatus>  {
-        const find: ApartmentData = await this.apartmentsEntityRepository.findOne(id);
+        const find: ApartmentData = await ApartmentsEntity.findOne(id);
         if(find) {
-            await this.apartmentsEntityRepository.update(find.id, apartmentDataPart)
+            await ApartmentsEntity.update(find.id, apartmentDataPart)
             const statusTrue: PostStatus = {
                 isSuccess: true,
                 id: id,

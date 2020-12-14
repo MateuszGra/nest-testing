@@ -1,8 +1,8 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
 import {ApartmentData, ApartmentStatus, PurposeType} from "../interface/apartment-data";
 
 @Entity()
-export class ApartmentsEntity implements ApartmentData {
+export class ApartmentsEntity extends BaseEntity implements ApartmentData {
     @PrimaryGeneratedColumn()
     id: string;
     @Column()

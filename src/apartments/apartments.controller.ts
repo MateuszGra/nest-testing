@@ -1,8 +1,8 @@
 import {Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/common';
 import {ApartmentsService} from "./apartments.service";
-import {ApartmentDto} from "./dto/apartment-dto";
 import {PostStatus} from "../interface/post-status";
 import {ApartmentData} from "../interface/apartment-data";
+import {ApartmentsEntity} from "./apartments.entity";
 
 
 @Controller('apartments')
@@ -20,7 +20,7 @@ export class ApartmentsController {
 
     @Post('/')
     async addApartment(
-        @Body() newApartment: ApartmentDto,
+        @Body() newApartment: ApartmentsEntity,
     ): Promise<PostStatus> {
         return await this.apartmentsService.apartmentPush(newApartment);
     }
