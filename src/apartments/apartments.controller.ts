@@ -24,6 +24,13 @@ export class ApartmentsController {
         return await this.apartmentsService.apartmentPush(newApartment);
     }
 
+    @Get('/search/name/:searchTerm')
+    async findName(
+        @Param('searchTerm') searchTerm: string
+    ): Promise<RespStatus> {
+        return await this.apartmentsService.searchName(searchTerm);
+    }
+
     @Get('/page/:page')
     async pagination(
         @Param('page') page: string

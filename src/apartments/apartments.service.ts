@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {ApartmentData} from "../interface/apartment-data";
 import {RespStatus} from "../interface/resp-status";
 import {ApartmentsEntity} from "./apartments.entity";
+import {Like} from "typeorm";
 
 
 @Injectable()
@@ -48,8 +49,29 @@ export class ApartmentsService {
 
     }
 
+    async searchName(searchTerm: string): Promise<RespStatus> {
+        const res: ApartmentData[] = await ApartmentsEntity.find({
+            where:{
+                name: Like(`%${searchTerm}%`),
+            }
+        });
+
+        if(res[0]){
+            return {
+                isSuccess: true,
+                items: res,
+            }
+        } else {
+            return {
+                isSuccess: false,
+                errors: [`${searchTerm} not found`],
+            }
+        }
+
+    }
+
     async apartmentsSingle(id: number): Promise<RespStatus>{
-        let res: ApartmentData = await ApartmentsEntity.findOne(id);
+        const res: ApartmentData = await ApartmentsEntity.findOne(id);
         if(res) {
             return {
                 isSuccess: true,
