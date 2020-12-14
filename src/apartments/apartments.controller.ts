@@ -25,25 +25,32 @@ export class ApartmentsController {
         return await this.apartmentsService.apartmentPush(newApartment);
     }
 
+    @Get('/page/:page')
+    async pagination(
+        @Param('page') page: string
+    ): Promise<ApartmentData[]> {
+        return await this.apartmentsService.apartmentsPage(Number(page));
+    }
+
     @Get('/:id')
     async showSingleApartment(
-        @Param('id') id: number,
+        @Param('id') id: string,
     ): Promise<ApartmentData | PostStatus> {
-        return await this.apartmentsService.apartmentsSingle(id);
+        return await this.apartmentsService.apartmentsSingle(Number(id));
     }
 
     @Delete('/:id')
     async removeApartment(
-        @Param('id') id: number,
+        @Param('id') id: string,
     ): Promise<PostStatus> {
-        return await this.apartmentsService.apartmentRemove(id);
+        return await this.apartmentsService.apartmentRemove(Number(id));
     }
 
     @Put('/:id')
     async editApartment(
-        @Param('id') id: number,
+        @Param('id') id: string,
         @Body() apartmentDataPart,
     ) {
-        return await this.apartmentsService.apartmentPut(id, apartmentDataPart);
+        return await this.apartmentsService.apartmentPut(Number(id), apartmentDataPart);
     }
 }

@@ -12,6 +12,20 @@ export class ApartmentsService {
         return await ApartmentsEntity.find();
     }
 
+    async apartmentsPage(currentPage: number = 1): Promise<ApartmentData[]> {
+        const maxPerPage = 3;
+
+        const [items, count] = await ApartmentsEntity.findAndCount({
+            skip: maxPerPage * (currentPage - 1),
+            take: maxPerPage,
+        })
+
+        const pagesCount = Math.ceil(count / maxPerPage);
+
+        return items;
+
+    }
+
     async apartmentsSingle(id: number): Promise<ApartmentData | PostStatus>{
         let res: ApartmentData = await ApartmentsEntity.findOne(id);
         if(res) return res;
@@ -28,7 +42,7 @@ export class ApartmentsService {
         const status: PostStatus = await this.postValidation(newApartment);
         if (status.isSuccess === true) {
             const add: ApartmentData = await ApartmentsEntity.save(newApartment);
-            status.id = parseInt(add.id);
+            status.id = Number(add.id);
         }
         return status;
     }
