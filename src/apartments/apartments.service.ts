@@ -44,6 +44,7 @@ export class ApartmentsService {
         if(items[0]){
             return {
                 isSuccess: true,
+                itemsCount: count,
                 pagesCount: pagesCount,
                 items: items,
             }
