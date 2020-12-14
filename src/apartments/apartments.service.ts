@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import {ApartmentData} from "../interface/apartment-data";
-import {PostStatus} from "../interface/post-status";
+import {RespStatus} from "../interface/resp-status";
 import {ApartmentsEntity} from "./apartments.entity";
 
 
 @Injectable()
 export class ApartmentsService {
 
-    async apartmentsAll(): Promise<PostStatus> {
+    async apartmentsAll(): Promise<RespStatus> {
         const resp = await ApartmentsEntity.find();
         if (resp[0]) {
             return {
@@ -22,7 +22,7 @@ export class ApartmentsService {
         }
     }
 
-    async apartmentsPage(currentPage: number = 1): Promise<PostStatus> {
+    async apartmentsPage(currentPage: number = 1): Promise<RespStatus> {
         const maxPerPage = 3;
 
         const [items, count] = await ApartmentsEntity.findAndCount({
@@ -48,7 +48,7 @@ export class ApartmentsService {
 
     }
 
-    async apartmentsSingle(id: number): Promise<PostStatus>{
+    async apartmentsSingle(id: number): Promise<RespStatus>{
         let res: ApartmentData = await ApartmentsEntity.findOne(id);
         if(res) {
             return {
@@ -63,15 +63,13 @@ export class ApartmentsService {
         }
     }
 
-    async apartmentPush(newApartment: ApartmentsEntity): Promise<PostStatus> {
-        const status: PostStatus = await this.postValidation(newApartment);
-        if (status.isSuccess === true) {
-            await ApartmentsEntity.save(newApartment);
-        }
+    async apartmentPush(newApartment: ApartmentsEntity): Promise<RespStatus> {
+        const status: RespStatus = await this.postValidation(newApartment);
+        if (status.isSuccess === true) await ApartmentsEntity.save(newApartment);
         return status;
     }
 
-    async postValidation(newApartment: ApartmentData): Promise<PostStatus> {
+    async postValidation(newApartment: ApartmentData): Promise<RespStatus> {
         const errors: string[] = [];
 
         if(!newApartment.name) errors.push('name is empty');
@@ -121,7 +119,7 @@ export class ApartmentsService {
 
     }
 
-    async apartmentRemove(id: number): Promise<PostStatus> {
+    async apartmentRemove(id: number): Promise<RespStatus> {
         const find: ApartmentsEntity = await ApartmentsEntity.findOne(id);
 
         if(find) {
@@ -139,7 +137,7 @@ export class ApartmentsService {
 
     }
 
-    async apartmentPut(id: number, apartmentDataPart): Promise<PostStatus>  {
+    async apartmentPut(id: number, apartmentDataPart): Promise<RespStatus>  {
         const find: ApartmentData = await ApartmentsEntity.findOne(id);
         if(find) {
             await ApartmentsEntity.update(find.id, apartmentDataPart)

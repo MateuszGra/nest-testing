@@ -1,6 +1,6 @@
 import {ApartmentData} from "./apartment-data";
 
-export type PostStatus = {
+export type RespStatus = {
     isSuccess: true,
     items?: ApartmentData[],
     pagesCount?: number,
