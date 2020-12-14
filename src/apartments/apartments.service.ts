@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {ApartmentData} from "../interface/apartment-data";
+import {ApartmentData, ApartmentStatus} from "../interface/apartment-data";
 import {RespStatus} from "../interface/resp-status";
 import {ApartmentsEntity} from "./apartments.entity";
 import {Like} from "typeorm";
@@ -9,7 +9,12 @@ import {Like} from "typeorm";
 export class ApartmentsService {
 
     async apartmentsAll(): Promise<RespStatus> {
-        const resp = await ApartmentsEntity.find();
+        const resp: ApartmentData[] = await ApartmentsEntity.find({
+            order: {
+                status: 'ASC',
+                price: 'ASC',
+            },
+        });
         if (resp[0]) {
             return {
                 isSuccess: true,
@@ -29,6 +34,9 @@ export class ApartmentsService {
         const [items, count] = await ApartmentsEntity.findAndCount({
             skip: maxPerPage * (currentPage - 1),
             take: maxPerPage,
+            order: {
+                price: 'ASC'
+            },
         })
 
         const pagesCount = Math.ceil(count / maxPerPage);
@@ -53,7 +61,10 @@ export class ApartmentsService {
         const res: ApartmentData[] = await ApartmentsEntity.find({
             where:{
                 name: Like(`%${searchTerm}%`),
-            }
+            },
+            order: {
+                price: 'ASC'
+            },
         });
 
         if(res[0]){
