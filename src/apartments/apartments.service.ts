@@ -9,7 +9,7 @@ import {Like} from "typeorm";
 export class ApartmentsService {
 
     async apartmentsAll(): Promise<RespStatus> {
-        const [items, count] = await ApartmentsEntity.findAndCount({
+        const [items, count]: [ApartmentData[], number] = await ApartmentsEntity.findAndCount({
             order: {
                 price: 'ASC',
             },
@@ -31,7 +31,7 @@ export class ApartmentsService {
     async apartmentsPage(currentPage: number = 1): Promise<RespStatus> {
         const maxPerPage = 3;
 
-        const [items, count] = await ApartmentsEntity.findAndCount({
+        const [items, count]: [ApartmentData[], number] = await ApartmentsEntity.findAndCount({
             skip: maxPerPage * (currentPage - 1),
             take: maxPerPage,
             order: {
@@ -58,7 +58,7 @@ export class ApartmentsService {
     }
 
     async searchName(searchTerm: string): Promise<RespStatus> {
-        const [items, count] = await ApartmentsEntity.findAndCount({
+        const [items, count]: [ApartmentData[], number] = await ApartmentsEntity.findAndCount({
             where:{
                 name: Like(`%${searchTerm}%`),
             },
