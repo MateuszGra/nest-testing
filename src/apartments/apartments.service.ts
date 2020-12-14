@@ -6,13 +6,23 @@ import {ApartmentsEntity} from "./apartments.entity";
 
 @Injectable()
 export class ApartmentsService {
-    apartments: ApartmentData[];
 
-    async apartmentsAll(): Promise<ApartmentData[]> {
-        return await ApartmentsEntity.find();
+    async apartmentsAll(): Promise<PostStatus> {
+        const resp = await ApartmentsEntity.find();
+        if (resp[0]) {
+            return {
+                isSuccess: true,
+                items: resp,
+            }
+        } else {
+            return {
+                isSuccess: false,
+                errors: [`not found`],
+            }
+        }
     }
 
-    async apartmentsPage(currentPage: number = 1): Promise<ApartmentData[]> {
+    async apartmentsPage(currentPage: number = 1): Promise<PostStatus> {
         const maxPerPage = 3;
 
         const [items, count] = await ApartmentsEntity.findAndCount({
@@ -22,27 +32,41 @@ export class ApartmentsService {
 
         const pagesCount = Math.ceil(count / maxPerPage);
 
-        return items;
+        if(items[0]){
+            return {
+                isSuccess: true,
+                pagesCount: pagesCount,
+                items: items,
+            }
+        } else {
+            return {
+                isSuccess: false,
+                pagesCount: pagesCount,
+                errors: [`page ${currentPage} not found`],
+            }
+        }
 
     }
 
-    async apartmentsSingle(id: number): Promise<ApartmentData | PostStatus>{
+    async apartmentsSingle(id: number): Promise<PostStatus>{
         let res: ApartmentData = await ApartmentsEntity.findOne(id);
-        if(res) return res;
-        else{
-            const statusFalse: PostStatus = {
+        if(res) {
+            return {
+                isSuccess: true,
+                items: [res],
+            }
+        } else {
+            return {
                 isSuccess: false,
                 errors: [`${id} not found`],
             }
-            return statusFalse;
         }
     }
 
     async apartmentPush(newApartment: ApartmentsEntity): Promise<PostStatus> {
         const status: PostStatus = await this.postValidation(newApartment);
         if (status.isSuccess === true) {
-            const add: ApartmentData = await ApartmentsEntity.save(newApartment);
-            status.id = Number(add.id);
+            await ApartmentsEntity.save(newApartment);
         }
         return status;
     }
@@ -85,18 +109,14 @@ export class ApartmentsService {
         else if(typeof newApartment.floorIMG !== 'string') errors.push('images.floor is not string');
 
         if(errors.length === 0) {
-            const statusTrue: PostStatus = {
+            return {
                 isSuccess: true,
-                id: 404,
             }
-            return statusTrue;
-
         } else {
-            const statusFalse: PostStatus = {
+            return {
                 isSuccess: false,
                 errors: errors,
             }
-            return statusFalse;
         }
 
     }
@@ -106,19 +126,15 @@ export class ApartmentsService {
 
         if(find) {
             await ApartmentsEntity.remove(find);
-            const statusTrue: PostStatus = {
+            return {
                 isSuccess: true,
-                id: id,
             }
-            return statusTrue;
         }
         else {
-            const statusFalse: PostStatus = {
+            return {
                 isSuccess: false,
                 errors: [`${id} not found`],
             }
-
-            return statusFalse;
         }
 
     }
@@ -127,17 +143,14 @@ export class ApartmentsService {
         const find: ApartmentData = await ApartmentsEntity.findOne(id);
         if(find) {
             await ApartmentsEntity.update(find.id, apartmentDataPart)
-            const statusTrue: PostStatus = {
+            return {
                 isSuccess: true,
-                id: id,
             }
-            return statusTrue;
         } else {
-            const statusFalse: PostStatus = {
+            return {
                 isSuccess: false,
                 errors: [`${id} not found`],
             }
-            return statusFalse;
         }
     }
 }

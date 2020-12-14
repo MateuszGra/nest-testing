@@ -1,7 +1,6 @@
 import {Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/common';
 import {ApartmentsService} from "./apartments.service";
 import {PostStatus} from "../interface/post-status";
-import {ApartmentData} from "../interface/apartment-data";
 import {ApartmentsEntity} from "./apartments.entity";
 
 
@@ -14,7 +13,7 @@ export class ApartmentsController {
     }
 
     @Get('/')
-    async showApartments(): Promise<ApartmentData[]> {
+    async showApartments(): Promise<PostStatus> {
         return await this.apartmentsService.apartmentsAll();
     }
 
@@ -28,14 +27,14 @@ export class ApartmentsController {
     @Get('/page/:page')
     async pagination(
         @Param('page') page: string
-    ): Promise<ApartmentData[]> {
+    ): Promise<PostStatus> {
         return await this.apartmentsService.apartmentsPage(Number(page));
     }
 
     @Get('/:id')
     async showSingleApartment(
         @Param('id') id: string,
-    ): Promise<ApartmentData | PostStatus> {
+    ): Promise<PostStatus> {
         return await this.apartmentsService.apartmentsSingle(Number(id));
     }
 
@@ -50,7 +49,7 @@ export class ApartmentsController {
     async editApartment(
         @Param('id') id: string,
         @Body() apartmentDataPart,
-    ) {
+    ): Promise<PostStatus> {
         return await this.apartmentsService.apartmentPut(Number(id), apartmentDataPart);
     }
 }
