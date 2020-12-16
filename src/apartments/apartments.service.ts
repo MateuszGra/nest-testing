@@ -10,6 +10,7 @@ export class ApartmentsService {
 
     async apartmentsAll(): Promise<RespStatus> {
         const [items, count]: [ApartmentData[], number] = await ApartmentsEntity.findAndCount({
+            relations: ['images'],
             order: {
                 price: 'ASC',
             },
@@ -32,6 +33,7 @@ export class ApartmentsService {
         const maxPerPage = 3;
 
         const [items, count]: [ApartmentData[], number] = await ApartmentsEntity.findAndCount({
+            relations: ['images'],
             skip: maxPerPage * (currentPage - 1),
             take: maxPerPage,
             order: {
@@ -60,6 +62,7 @@ export class ApartmentsService {
 
     async searchName(searchTerm: string): Promise<RespStatus> {
         const [items, count]: [ApartmentData[], number] = await ApartmentsEntity.findAndCount({
+            relations: ['images'],
             where:{
                 name: Like(`%${searchTerm}%`),
             },
@@ -84,7 +87,12 @@ export class ApartmentsService {
     }
 
     async apartmentsSingle(id: number): Promise<RespStatus>{
-        const res: ApartmentData = await ApartmentsEntity.findOne(id);
+        const res: ApartmentData = await ApartmentsEntity.findOne({
+            relations: ['images'],
+            where:{
+                id: id,
+            },
+        });
         if(res) {
             return {
                 isSuccess: true,

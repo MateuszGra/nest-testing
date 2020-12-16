@@ -20,7 +20,7 @@ export interface ApartmentData {
     status: ApartmentStatus,
     projectionIMG: string,
     floorIMG: string,
-    image?: ApartmentImages,
+    images?: ApartmentImages,
 }
 
 export interface ApartmentImages {
