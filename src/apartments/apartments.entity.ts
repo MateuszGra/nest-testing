@@ -1,10 +1,11 @@
-import {BaseEntity, Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import {BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {ApartmentData, ApartmentStatus, PurposeType} from "../interface/apartment-data";
+import {ApartmentsImagesEntity} from "./apartments-images.entity";
 
 @Entity()
 export class ApartmentsEntity extends BaseEntity implements ApartmentData {
     @PrimaryGeneratedColumn()
-    id: string;
+    id: number;
     @Column()
     name: string;
     @Column()
@@ -25,4 +26,8 @@ export class ApartmentsEntity extends BaseEntity implements ApartmentData {
     projectionIMG: string;
     @Column()
     floorIMG: string;
+
+    @OneToOne(() => ApartmentsImagesEntity)
+    @JoinColumn()
+    images: ApartmentsImagesEntity;
 }

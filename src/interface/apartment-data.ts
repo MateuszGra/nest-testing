@@ -12,7 +12,7 @@ export enum ApartmentStatus {
 
 export interface ApartmentData {
     name: string,
-    id: string,
+    id: number,
     size: number,
     price: number,
     floor: number,
@@ -20,4 +20,11 @@ export interface ApartmentData {
     status: ApartmentStatus,
     projectionIMG: string,
     floorIMG: string,
+    image?: ApartmentImages,
+}
+
+export interface ApartmentImages {
+    id: number
+    projection: string,
+    floor: string,
 }
