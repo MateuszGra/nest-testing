@@ -1,7 +1,7 @@
-import {Body, Controller, Delete, Get, Inject, Param, Post, Put} from '@nestjs/common';
-import {ApartmentsService} from "./apartments.service";
-import {RespStatus} from "../interface/resp-status";
-import {ApartmentsEntity} from "./apartments.entity";
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { ApartmentsService } from "./apartments.service";
+import { RespStatus } from "../interface/resp-status";
+import { ApartmentsEntity } from "./apartments.entity";
 
 
 @Controller('apartments')

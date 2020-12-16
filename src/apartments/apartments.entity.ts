@@ -1,6 +1,6 @@
-import {BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {ApartmentData, ApartmentStatus, PurposeType} from "../interface/apartment-data";
-import {ApartmentsImagesEntity} from "./apartments-images.entity";
+import { BaseEntity, Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ApartmentData, ApartmentStatus, PurposeType } from "../interface/apartment-data";
+import { ApartmentsImagesEntity } from "./apartments-images.entity";
 
 @Entity()
 export class ApartmentsEntity extends BaseEntity implements ApartmentData {

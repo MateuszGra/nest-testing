@@ -1,6 +1,6 @@
-import {BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn} from "typeorm";
-import {ApartmentImages} from "../interface/apartment-data";
-import {ApartmentsEntity} from "./apartments.entity";
+import { BaseEntity, Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ApartmentImages } from "../interface/apartment-data";
+import { ApartmentsEntity } from "./apartments.entity";
 
 
 @Entity()

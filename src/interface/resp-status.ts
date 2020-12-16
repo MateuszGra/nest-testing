@@ -1,4 +1,4 @@
-import {ApartmentData} from "./apartment-data";
+import { ApartmentData } from "./apartment-data";
 
 export type RespStatus = {
     isSuccess: true,

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import {ApartmentData} from "../interface/apartment-data";
-import {RespStatus} from "../interface/resp-status";
-import {ApartmentsEntity} from "./apartments.entity";
-import {Like} from "typeorm";
+import { ApartmentData } from "../interface/apartment-data";
+import { RespStatus } from "../interface/resp-status";
+import { ApartmentsEntity } from "./apartments.entity";
+import { Like } from "typeorm";
 
 
 @Injectable()
